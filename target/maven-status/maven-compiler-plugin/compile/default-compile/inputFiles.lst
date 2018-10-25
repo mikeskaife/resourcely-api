@@ -1,0 +1,9 @@
+/Users/MSKAIFE/Documents/src/resourcely-api/src/main/java/com/jlr/ddc/servicebase/controller/vehicle/VehicleController.java
+/Users/MSKAIFE/Documents/src/resourcely-api/src/main/java/com/jlr/ddc/servicebase/controller/vehicle/VehicleResource.java
+/Users/MSKAIFE/Documents/src/resourcely-api/src/main/java/com/jlr/ddc/servicebase/controller/vehicle/VehicleControllerAdvice.java
+/Users/MSKAIFE/Documents/src/resourcely-api/src/main/java/com/jlr/ddc/servicebase/config/Constants.java
+/Users/MSKAIFE/Documents/src/resourcely-api/src/main/java/com/jlr/ddc/servicebase/domain/Vehicle.java
+/Users/MSKAIFE/Documents/src/resourcely-api/src/main/java/com/jlr/ddc/servicebase/repository/vehicle/VehicleRepository.java
+/Users/MSKAIFE/Documents/src/resourcely-api/src/main/java/com/jlr/ddc/servicebase/ServiceBaseApplication.java
+/Users/MSKAIFE/Documents/src/resourcely-api/src/main/java/com/jlr/ddc/servicebase/repository/vehicle/VehicleNotFoundException.java
+/Users/MSKAIFE/Documents/src/resourcely-api/src/main/java/com/jlr/ddc/servicebase/config/SwaggerConfig.java

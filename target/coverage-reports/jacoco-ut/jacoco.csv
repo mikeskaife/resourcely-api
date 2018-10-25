@@ -1,0 +1,8 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+servicebase,com.jlr.ddc.servicebase,ServiceBaseApplication,8,0,0,0,3,0,2,0,2,0
+servicebase,com.jlr.ddc.servicebase.controller.vehicle,VehicleControllerAdvice,7,32,0,0,1,5,1,3,1,3
+servicebase,com.jlr.ddc.servicebase.controller.vehicle,VehicleResource,0,31,0,0,0,7,0,2,0,2
+servicebase,com.jlr.ddc.servicebase.controller.vehicle,VehicleController,114,114,2,0,18,20,8,7,7,7
+servicebase,com.jlr.ddc.servicebase.repository.vehicle,VehicleNotFoundException,0,17,0,0,0,4,0,2,0,2
+servicebase,com.jlr.ddc.servicebase.domain,Vehicle,36,17,0,0,15,8,4,5,4,5
+servicebase,com.jlr.ddc.servicebase.config,SwaggerConfig,16,0,0,0,3,0,2,0,2,0

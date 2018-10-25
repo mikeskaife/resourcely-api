@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VehicleController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">servicebase</a> &gt; <a href="index.source.html" class="el_package">com.jlr.ddc.servicebase.controller.vehicle</a> &gt; <span class="el_source">VehicleController.java</span></div><h1>VehicleController.java</h1><pre class="source lang-java linenums">package com.jlr.ddc.servicebase.controller.vehicle;
+
+import com.jlr.ddc.servicebase.config.Constants;
+import com.jlr.ddc.servicebase.domain.Vehicle;
+import com.jlr.ddc.servicebase.repository.vehicle.VehicleNotFoundException;
+import com.jlr.ddc.servicebase.repository.vehicle.VehicleRepository;
+
+import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resources;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+@RestController
+@RequestMapping(value = &quot;/api/vehicles&quot;, produces = Constants.MEDIA_TYPE_APPLICATION_JSON_HAL)
+public class VehicleController {
+
+<span class="fc" id="L33">  private static final Logger logger = LoggerFactory.getLogger(VehicleController.class);</span>
+
+  VehicleRepository vehicleRepository;
+
+<span class="fc" id="L37">  public VehicleController(VehicleRepository vehicleRepository) {</span>
+<span class="fc" id="L38">    this.vehicleRepository = vehicleRepository;</span>
+<span class="fc" id="L39">  }</span>
+
+  /**
+   * GET operation to return all items.
+   * 
+   * @return all items
+   */
+  @GetMapping
+  public ResponseEntity&lt;Resources&lt;VehicleResource&gt;&gt; all() {
+
+<span class="fc" id="L49">    logger.info(&quot;GET received&quot;);</span>
+
+<span class="fc" id="L51">    List&lt;VehicleResource&gt; allVehicles =</span>
+<span class="fc" id="L52">        vehicleRepository.findAll().stream().map(VehicleResource::new)</span>
+<span class="fc" id="L53">        .collect(Collectors.toList());</span>
+
+<span class="fc" id="L55">    Resources&lt;VehicleResource&gt; resources = new Resources&lt;&gt;(allVehicles);</span>
+
+<span class="fc" id="L57">    String uriString = ServletUriComponentsBuilder.fromCurrentRequest().build().toString();</span>
+<span class="fc" id="L58">    resources.add(new Link(uriString, &quot;ref&quot;));</span>
+
+<span class="fc" id="L60">    return ResponseEntity.ok(resources);</span>
+  }
+
+  /**
+   * GET operation to return one specific item.
+   * 
+   * @param id identifies the item to be returned
+   * @return the identified single item
+   */
+  @GetMapping(&quot;/{id}&quot;)
+  public ResponseEntity&lt;VehicleResource&gt; get(@PathVariable(&quot;id&quot;) Long id) {
+
+<span class="fc" id="L72">    logger.info(&quot;GET/id received with id = &quot; + id);</span>
+
+<span class="fc" id="L74">    return vehicleRepository.findById(id).map(p -&gt; ResponseEntity.ok(new VehicleResource(p)))</span>
+<span class="fc" id="L75">        .orElseThrow(() -&gt; new VehicleNotFoundException(id));</span>
+  }
+
+  /**
+   * POST operation to create an item.
+   * 
+   * @param vehicleFromRequest item to be created
+   * @return the created item
+   */
+  @PostMapping
+  public ResponseEntity&lt;VehicleResource&gt; post(@RequestBody Vehicle vehicleFromRequest) {
+
+<span class="fc" id="L87">    logger.info(&quot;POST received with body = &quot; + vehicleFromRequest.toString());</span>
+
+<span class="fc" id="L89">    Vehicle createdVehicle = vehicleRepository.save(vehicleFromRequest);</span>
+
+<span class="fc" id="L91">    URI uri = MvcUriComponentsBuilder.fromController(getClass()).path(&quot;/{id}&quot;)</span>
+<span class="fc" id="L92">        .buildAndExpand(vehicleFromRequest.getId()).toUri();</span>
+
+<span class="fc" id="L94">    return ResponseEntity.created(uri).body(new VehicleResource(createdVehicle));</span>
+  }
+
+  /**
+   * PUT operation to update an item.
+   * 
+   * @param id                 identifies the item to be updated
+   * @param vehicleFromRequest the item to be updated
+   * @return the updated item
+   */
+  @PutMapping(&quot;/{id}&quot;)
+  public ResponseEntity&lt;VehicleResource&gt; put(
+      @PathVariable(&quot;id&quot;) Long id,
+      @RequestBody Vehicle vehicleFromRequest) {
+
+<span class="nc" id="L109">    logger.info(&quot;PUT/id received with id = &quot; + id);</span>
+
+<span class="nc" id="L111">    Vehicle updatedVehicle = new Vehicle(vehicleFromRequest, id);</span>
+<span class="nc" id="L112">    vehicleRepository.save(updatedVehicle);</span>
+
+<span class="nc" id="L114">    VehicleResource updatedVehicleResource = new VehicleResource(updatedVehicle);</span>
+
+<span class="nc" id="L116">    URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();</span>
+
+<span class="nc" id="L118">    return ResponseEntity.created(uri).body(updatedVehicleResource);</span>
+  }
+
+  /**
+   * TODO - Implements JSON merge patch in line with RFC7386 -
+   * https://tools.ietf.org/html/rfc7386
+   */
+  @PatchMapping(&quot;/{id}&quot;)
+  public ResponseEntity&lt;VehicleResource&gt; patch(
+      @PathVariable(&quot;id&quot;) Long id,
+      @RequestBody Vehicle vehicleFromRequest) {
+
+<span class="nc" id="L130">    logger.info(&quot;PATCH/id received with id = &quot; + id);</span>
+
+<span class="nc" id="L132">    return vehicleRepository.findById(id).map(p -&gt; {</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">      if (vehicleFromRequest.getName() != null) {</span>
+<span class="nc" id="L134">        p.setName(vehicleFromRequest.getName());</span>
+      }
+<span class="nc" id="L136">      vehicleRepository.save(p);</span>
+<span class="nc" id="L137">      return ResponseEntity.ok().body(new VehicleResource(p));</span>
+<span class="nc" id="L138">    }).orElseThrow(() -&gt; new VehicleNotFoundException(id));</span>
+  }
+
+  /**
+   * DELETE operation to remove a specified item.
+   * 
+   * @param id identifies the item to be deleted
+   * @return the deleted item
+   */
+  @DeleteMapping(&quot;/{id}&quot;)
+  public ResponseEntity&lt;?&gt; delete(@PathVariable(&quot;id&quot;) Long id) {
+
+<span class="nc" id="L150">    logger.info(&quot;DELETE/id received with id = &quot; + id);</span>
+
+<span class="nc" id="L152">    return vehicleRepository.findById(id).map(p -&gt; {</span>
+<span class="nc" id="L153">      vehicleRepository.deleteById(id);</span>
+<span class="nc" id="L154">      return ResponseEntity.noContent().build();</span>
+<span class="nc" id="L155">    }).orElseThrow(() -&gt; new VehicleNotFoundException(id));</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
