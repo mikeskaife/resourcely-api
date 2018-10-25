@@ -1,3 +1,3 @@
-# servicebase
+# resourcely-api
 
-Spring Boot project to form the base of all JLR microservices
+Spring Boot application for the API behind Resourcely front end app
